@@ -1,0 +1,6 @@
+board:
+  name: our_board_from_scratch_method
+  full_name: Our board from scratch method
+  vendor: iomico
+  socs:
+    - name: nrf52832  

@@ -1,0 +1,6 @@
+board:
+  name: our_board_copy_method
+  full_name: Our board copy method
+  vendor: iomico
+  socs:
+  - name: nrf52832

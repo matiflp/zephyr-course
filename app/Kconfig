@@ -1,4 +1,5 @@
 source "Kconfig.zephyr"
+rsource "drivers/our_driver/Kconfig" 
 
 config APP_HEARTBEAT_PERIOD_MS
     int "Heart beat period ms"

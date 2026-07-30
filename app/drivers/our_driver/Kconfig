@@ -1,0 +1,5 @@
+config OUR_DRIVER
+    bool "Our driver implemetation"
+    default y
+    help
+        Enable our driver implementation.

@@ -6,6 +6,7 @@
 
 #define DT_DRV_COMPAT our_driver
 
+/* The devicetree node identifier for the "led0" alias. */
 #define LED_NODE DT_ALIAS(app_led)
 
 LOG_MODULE_REGISTER(our_driver, LOG_LEVEL_INF);

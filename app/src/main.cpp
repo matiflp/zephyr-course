@@ -4,8 +4,6 @@
 
 #include "our_driver.h"
 
-/* The devicetree node identifier for the "led0" alias. */
-
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 namespace {
@@ -19,12 +17,12 @@ namespace {
 			return;
 		}
 
-		count = our_driver_custom_function_get_count(driver);
-		LOG_INF("count: %d", count);
-		sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
-		k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
-		our_driver_custom_function_set_count(driver, count + 1);
-		sensor_sample_fetch(driver);
+		// count = our_driver_custom_function_get_count(driver);
+		// LOG_INF("count: %d", count);
+		// sensor_channel_get(driver, SENSOR_CHAN_AMBIENT_TEMP, &value);
+		// k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
+		// our_driver_custom_function_set_count(driver, count + 1);
+		// sensor_sample_fetch(driver);
 		k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
 	}
 } // namespace

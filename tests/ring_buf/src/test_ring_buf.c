@@ -47,7 +47,14 @@ ZTEST(ring_buf_init, test_reinit_clears_state)
 	 * verify the buffer is empty and count is 0.
 	 * See TEST_SPEC.md "Suite ring_buf_init" #2.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+	uint32_t new_value = 99;
+	zassert_ok(rb_push(new_value), "Push a value to ring buffer must be succeded.");
+	zassert_equal(rb_count(), 1, "Expected 1 value");
+
+	zassert_ok(rb_init(4), "Re init must be succeded.");
+	zassert_true(rb_is_empty(), "Ring buffer must be empty.");
+	zassert_equal(rb_count(), 0, "Ring buffer must have count equal to 0.");
 }
 
 /*
@@ -64,7 +71,15 @@ ZTEST(ring_buf_push_pop, test_single_push_pop)
 	/* TODO(l8-task1): rb_push(42), rb_pop(&v) -> v == 42, buffer empty after.
 	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #1.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_ok(rb_push(42), "Push new item must be succedded.");
+	zassert_true(!rb_is_empty(), "Ring buffer must not be empty");
+
+	uint32_t value;
+	zassert_ok(rb_pop(&value), "Pop must be succeded");
+	zassert_equal(value, 42, "Popped value must be 42");
+	zassert_true(rb_is_empty(), "Ring buffer must be empty.");
 }
 
 ZTEST(ring_buf_push_pop, test_fifo_order)
@@ -73,7 +88,28 @@ ZTEST(ring_buf_push_pop, test_fifo_order)
 	 * and verify the values come out as 1, 2, 3 in that order.
 	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #2.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_ok(rb_push(1), "Push must be succedded.");
+	zassert_equal(rb_count(), 1, "Must be 1");
+
+	zassert_ok(rb_push(2), "Push must be succedded.");
+	zassert_equal(rb_count(), 2, "Must be 2");
+
+	zassert_ok(rb_push(3), "Push must be succedded.");
+	zassert_equal(rb_count(), 3, "Must be 3");
+
+	uint32_t ret;
+	zassert_ok(rb_pop(&ret), "Pop must be succedded.");
+	zassert_equal(ret, 1, "Must be 1");
+
+	zassert_ok(rb_pop(&ret), "Pop must be succedded.");
+	zassert_equal(ret, 2, "Must be 2");
+
+	zassert_ok(rb_pop(&ret), "Pop must be succedded.");
+	zassert_equal(ret, 3, "Must be 3");
+
+	zassert_true(rb_is_empty(), "Must be empty");
 }
 
 ZTEST(ring_buf_push_pop, test_push_full_returns_enospc)
@@ -82,7 +118,13 @@ ZTEST(ring_buf_push_pop, test_push_full_returns_enospc)
 	 * one more value -> -ENOSPC.
 	 * See TEST_SPEC.md "Suite ring_buf_push_pop" #3.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_ok(rb_push(1), "Push must be succedded.");
+	zassert_ok(rb_push(2), "Push must be succedded.");
+	zassert_ok(rb_push(3), "Push must be succedded.");
+	zassert_ok(rb_push(4), "Push must be succedded.");
+	zassert_equal(rb_push(5), -ENOSPC, "Must exceeds the capacity.");
 }
 
 /*
@@ -100,7 +142,20 @@ ZTEST(ring_buf_boundaries, test_peek_does_not_consume)
 	 * -> v == 7; rb_count() still == 1.
 	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #1.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_ok(rb_push(7), "Push must be succedded.");
+	zassert_equal(rb_count(), 1, "Must be 1");
+
+	uint32_t ret;
+
+	zassert_ok(rb_peek(&ret), "Peek must be succeded");
+	zassert_equal(ret, 7, "Must be 7.");
+	zassert_equal(rb_count(), 1, "Must be 1");
+
+	zassert_ok(rb_peek(&ret), "Peek must be succeded");
+	zassert_equal(ret, 7, "Must be 7.");
+	zassert_equal(rb_count(), 1, "Must be 1");
 }
 
 ZTEST(ring_buf_boundaries, test_pop_null_returns_einval)
@@ -108,7 +163,9 @@ ZTEST(ring_buf_boundaries, test_pop_null_returns_einval)
 	/* TODO(l8-task1): rb_pop(NULL) -> -EINVAL.
 	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #2.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_equal(rb_pop(NULL), -EINVAL, "Must be equal to -EINVAL.");
 }
 
 ZTEST(ring_buf_boundaries, test_is_full_after_fill)
@@ -116,5 +173,13 @@ ZTEST(ring_buf_boundaries, test_is_full_after_fill)
 	/* TODO(l8-task1): push 4 values -> rb_is_full() == true, rb_count() == 4.
 	 * See TEST_SPEC.md "Suite ring_buf_boundaries" #3.
 	 */
-	ztest_test_skip();
+	//ztest_test_skip();
+
+	zassert_ok(rb_push(1), "Push must be succedded.");
+	zassert_ok(rb_push(2), "Push must be succedded.");
+	zassert_ok(rb_push(3), "Push must be succedded.");
+	zassert_ok(rb_push(4), "Push must be succedded.");
+
+	zassert_true(rb_is_full(), "Must be full.");
+	zassert_equal(rb_count(), 4, "Must be equal to 4.");
 }

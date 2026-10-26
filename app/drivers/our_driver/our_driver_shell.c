@@ -57,6 +57,12 @@ static int shell_subcmd_set_handler(const struct shell *sh, size_t argc, char **
     int err = 0;
     long value;
 
+    const struct device *dev = shell_device_get_binding("our_driver");
+    if (!dev) {
+        shell_print(sh, "No device found\n");
+        return 0;
+    }
+
     if (argc < 2) {
         shell_error(sh, "Missing value. Usage: sensor set <integer>");
         return -EINVAL;
@@ -67,8 +73,14 @@ static int shell_subcmd_set_handler(const struct shell *sh, size_t argc, char **
         shell_error(sh, "Invalid value '%s': expected an integer", argv[1]);
         return err;
     }
-
+    
     shell_print(sh, "Value: %ld", value);
+
+    int ret = our_driver_custom_function_set_count(dev, (int)value);
+    if (ret < 0) {
+        shell_error(sh, "Failed to set count: %d", ret);
+        return ret;
+    }
 
     return 0;
 }

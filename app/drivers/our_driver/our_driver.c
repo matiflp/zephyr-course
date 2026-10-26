@@ -15,10 +15,10 @@ static int our_driver_channel_get_impl (const struct device *dev, enum sensor_ch
 {
 	LOG_INF("Hello from channel get implementation, channel: %d", channel);
 
-	if (gpio_pin_set_dt(&led, 1) < 0)
+	if (gpio_pin_set_dt(&led, 0) < 0)
 		return 0;
 
-	LOG_INF("Led Turned On");
+	LOG_INF("Led Turned Off");
 
 	return 0;
 }
@@ -27,10 +27,10 @@ static int our_driver_sample_fetch_impl (const struct device *dev, enum sensor_c
 {
 	LOG_INF("Hello from sample fetch implementation, channel: %d", channel);
 
-	if (gpio_pin_set_dt(&led, 0) < 0)
+	if (gpio_pin_set_dt(&led, 1) < 0)
 		return 0;
 
-	LOG_INF("Led Turned Off");
+	LOG_INF("Led Turned On");
 
 	return 0;
 }

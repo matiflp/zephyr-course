@@ -1,6 +1,11 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/drivers/sensor.h>
 
+#include "our_driver.h"
+
+#define SET_COUNT_MIN 0
+#define SET_COUNT_MAX 1000
+
 static int shell_subcmd_fetch_handler(const struct shell *sh, size_t argc, char **argv)
 {
     ARG_UNUSED(argc);
@@ -83,13 +88,14 @@ static int shell_subcmd_set_handler(const struct shell *sh, size_t argc, char **
         return err;
     }
     
+    if (value < SET_COUNT_MIN || value > SET_COUNT_MAX) {
+        shell_error(sh, "Value %ld out of range [%d, %d]", value, SET_COUNT_MIN, SET_COUNT_MAX);
+        return -EINVAL;
+    }
+
     shell_print(sh, "Value: %ld", value);
 
-    int ret = our_driver_custom_function_set_count(dev, (int)value);
-    if (ret < 0) {
-        shell_error(sh, "Failed to set count: %d", ret);
-        return ret;
-    }
+    our_driver_custom_function_set_count(dev, (int)value);
 
     return 0;
 }

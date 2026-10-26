@@ -12,6 +12,8 @@ menuconfig LED_SUBSYSTEM
             
             config LED_BLINK_SLEEP_TIME_250MS
                 bool "Fast (250ms)"
+            config LED_BLINK_SLEEP_TIME_500MS
+                bool "Medium-fast (500ms)"
             config LED_BLINK_SLEEP_TIME_1SEG
                 bool "Medium (1s)"
             config LED_BLINK_SLEEP_TIME_2SEG
@@ -22,6 +24,7 @@ menuconfig LED_SUBSYSTEM
         config LED_BLINK_SLEEP_TIME
             int
             default 250 if LED_BLINK_SLEEP_TIME_250MS
+            default 500 if LED_BLINK_SLEEP_TIME_500MS
             default 1000 if LED_BLINK_SLEEP_TIME_1SEG
             default 2000 if LED_BLINK_SLEEP_TIME_2SEG
             default 0

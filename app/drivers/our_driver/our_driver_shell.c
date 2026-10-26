@@ -12,9 +12,8 @@ static int shell_subcmd_fetch_handler(const struct shell *sh, size_t argc, char 
         return 0;
     }
 
-    struct sensor_value value;
-    if (sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &value) < 0) {
-        shell_print(sh, "Failed to get ambient temperature\n");
+    if (sensor_sample_fetch(dev) < 0) {
+        shell_print(sh, "Failed to fetch sensor data\n");
         return 0;
     }
 
@@ -32,10 +31,14 @@ static int shell_subcmd_read_handler(const struct shell *sh, size_t argc, char *
         return 0;
     }
 
-    int ret = sensor_sample_fetch(dev);
-    if (ret < 0) {
-        shell_print(sh, "Failed to fetch sample: %d\n", ret);
+    struct sensor_value value;
+    int ret = sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &value);
+    if (ret == 0) {
+        shell_print(sh, "Got ambient temperature successfully\n");
         return 0;
+    }
+    else {
+        shell_print(sh, "Failed to get ambient temperature\n");
     }
 
     return 0;
@@ -46,8 +49,14 @@ static int shell_subcmd_info_handler(const struct shell *sh, size_t argc, char *
     ARG_UNUSED(argc);
     ARG_UNUSED(argv);
 
-    shell_print(sh, "Version: 1.0\n");
-    shell_print(sh, "State: ready\n");
+    const struct device *dev = shell_device_get_binding("our_driver");
+    if (!dev) {
+        shell_print(sh, "No device found\n");
+        return 0;
+    }
+
+    shell_print(sh, "Version: %s\n", dev->name);
+    shell_print(sh, "State: %s\n", device_is_ready(dev) ? "ready" : "not ready");
 
     return 0;
 }
